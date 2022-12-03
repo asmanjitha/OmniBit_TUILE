@@ -1,48 +1,25 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-
-public class PlaneFromPoly : MonoBehaviour
+public class PlaneFromPoly
 {
 
-    public Material mat;
-    public Vector3[] poly;  // Initialized in the inspector
+    // public Material mat;
+    // public Vector3[] poly;  // Initialized in the inspector
 
-    /// <summary>
-    /// Start is called on the frame when a script is enabled just before
-    /// any of the Update methods is called the first time.
-    /// </summary>
-    void Start()
-    {
-        // GeneratePlane(0);
-        // poly = DetermineDirectionOfPolygon(poly);
-        // GeneratePlane(0);
-        // DetermineMaximumLengths(poly);
-    }
 
-    /// <summary>
-    /// Update is called every frame, if the MonoBehaviour is enabled.
-    /// </summary>
-    void Update()
-    {
-
-    }
-    public void SetMaterial(Material material)
-    {
-        mat = material;
-    }
-
-    // public void SetPoly(Vector3[] polygons){
-    //     poly = polygons;
-    //     string msg =  poly.ToString();
-    //     ToastMessage.ShowToastMessage("Poly set:" + msg);
+    // public void SetMaterial(Material material)
+    // {
+    //     mat = material;
     // }
-    public void GeneratePlane(int alignment, Vector3[] poly, Material mat)
+
+    public static GameObject GeneratePlane(int alignment, Vector3[] poly, Material mat)
     {
         if (poly == null || poly.Length < 3)
         {
-            ToastMessage.ShowToastMessage("Define 2D polygon in 'poly' in the the Inspector");
-            return;
+            ToastMessage.ShowToastMessage("Define 2D polygon");
+            return null;
         }
 
         GameObject plane = new GameObject("Generated Plane");
@@ -91,17 +68,19 @@ public class PlaneFromPoly : MonoBehaviour
             mesh.uv = BuildUVsVerticle(vertices);
         }
 
-        plane.transform.position = center;
-        plane.transform.SetParent(GameObject.Find("Generated Planes").transform);
+
+        // plane.transform.SetParent(GameObject.Find("3DObject").transform);
+        plane.transform.localPosition = center;
 
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
 
 
-
+        mesh.RecalculateTangents();
+        return plane;
     }
 
-    Vector3 FindCenter(Vector3[] poly)
+    public static Vector3 FindCenter(Vector3[] poly)
     {
         Vector3 center = Vector3.zero;
         foreach (Vector3 v3 in poly)
@@ -111,7 +90,7 @@ public class PlaneFromPoly : MonoBehaviour
         return center / poly.Length;
     }
 
-    Vector2[] BuildUVsVerticle(Vector3[] vertices)
+    static Vector2[] BuildUVsVerticle(Vector3[] vertices)
     {
 
         float xMin = Mathf.Infinity;
@@ -144,7 +123,7 @@ public class PlaneFromPoly : MonoBehaviour
         return uvs;
     }
 
-    Vector2[] BuildUVsHorizontal(Vector3[] vertices)
+    static Vector2[] BuildUVsHorizontal(Vector3[] vertices)
     {
 
         float xMin = Mathf.Infinity;
@@ -177,48 +156,4 @@ public class PlaneFromPoly : MonoBehaviour
         return uvs;
     }
 
-    // private Vector3[] DetermineDirectionOfPolygon(Vector3[] poly){
-    //     if(poly.Length < 3){
-    //         return null;
-    //     }else{
-    //         float sum = 0;
-    //         Vector3[] reverse = new Vector3[poly.Length];
-    //         for(int i=0; i<poly.Length-1;i++){
-    //             float val = (poly[i+1].x - poly[i].x) * (poly[i+1].z + poly[i].z);
-    //             sum += val;
-    //             reverse[reverse.Length-i-1] = poly[i];
-    //         }
-    //         float valLast = (poly[0].x - poly[poly.Length-1].x) * (poly[0].z + poly[poly.Length-1].z);
-    //         reverse[0] = poly[poly.Length-1];
-
-    //         if(sum > 0){
-    //             return poly;
-    //         }else{
-    //             return reverse;
-    //         }
-    //     }
-    // }
-    // public void DetermineMaximumLengths(Vector3[] poly){
-    //     Debug.Log("Running");
-    //     float maxX = 1;
-    //     float maxZ = 1;
-
-    //     for (int i = 0; i < poly.Length-1; i++){
-    //         var tempX = Mathf.Abs(poly[i].x - poly[i+1].x);
-    //         var tempZ = Mathf.Abs(poly[i].z - poly[i+1].z);
-
-    //         if(tempX > maxX){
-    //             maxX = tempX;
-    //         }
-    //         if(tempZ > maxZ){
-    //             maxZ = tempZ;
-    //         }
-    //     }
-
-    //     maxX = Mathf.RoundToInt(maxX);
-    //     maxZ = Mathf.RoundToInt(maxZ);
-    //     Debug.Log(maxX + "," +  maxZ);
-
-    //     mat.mainTextureScale = new Vector2(maxX,maxZ);
-    // }
 }
