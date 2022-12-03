@@ -23,10 +23,10 @@ public class PlaceARAnchor : MonoBehaviour
     public static PlaceARAnchor instance = null;
     private static bool isScanning = true;
 
-    [SerializeField]
-    private TMP_Text tempAnchorDistanceText;
+    // [SerializeField]
+    // private TMP_Text tempAnchorDistanceText;
 
-    public GameObject distanceLabel;
+    // public GameObject distanceLabel;
 
     void Awake()
     {
@@ -74,6 +74,10 @@ public class PlaceARAnchor : MonoBehaviour
                 if (anchors.Count > 1)
                 {
                     int count = anchors.Count;
+                    if (count > 2)
+                    {
+                        ARSceneManager.ActivateCompleteAnchoringButton();
+                    }
                     // string dist = GetDistanceWithUnit(anchors[count - 2].transform.position, anchors[count - 1].transform.position);
                     // MakeDistancelabel(anchors[count - 2].transform.position, anchors[count - 1].transform.position, dist);
                 }
@@ -86,7 +90,7 @@ public class PlaceARAnchor : MonoBehaviour
         }
     }
 
-    private void EndAnchoring()
+    public void EndAnchoring()
     {
         isScanning = false;
         Pose pose = new Pose(anchors[0].transform.position, anchors[0].transform.rotation);
@@ -96,8 +100,8 @@ public class PlaceARAnchor : MonoBehaviour
         PlacementIndicatorARF.Deactivate();
         // string dist = GetDistanceWithUnit(anchors[0].transform.position, anchors[anchors.Count - 1].transform.position);
         // MakeDistancelabel(anchors[0].transform.position, anchors[anchors.Count - 1].transform.position, dist);
-        // ScanARSceneManager.CloseAnchorPlacingMode();
-        tempAnchorDistanceText.text = "";
+        ARSceneManager.CloseAnchorPlacingMode();
+        // tempAnchorDistanceText.text = "";
         Invoke("ResetAnchorSizes", 0.5f);
     }
 
@@ -118,7 +122,7 @@ public class PlaceARAnchor : MonoBehaviour
 
     private void MakeDistancelabel(Vector3 a, Vector3 b, string distance)
     {
-        GameObject temp = Instantiate(distanceLabel);
+        // GameObject temp = Instantiate(distanceLabel);
         // temp.GetComponent<DistanceLabelBehaviour>().PopulateDistanceLabel(a, b, distance);
     }
 
