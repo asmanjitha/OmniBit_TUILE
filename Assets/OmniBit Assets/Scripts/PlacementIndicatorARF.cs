@@ -12,7 +12,7 @@ public class PlacementIndicatorARF : MonoBehaviour
     private ARRaycastManager _arRaycastManager;
     private GameObject spawnedObject;
     private static Vector2 rayOrigin;
-    public static bool isActive = false;
+    public static bool isActive = true;
     public bool returnTargetingobject = false;
 
     private Material mat;
