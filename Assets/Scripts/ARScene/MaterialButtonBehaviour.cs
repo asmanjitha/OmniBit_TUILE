@@ -8,6 +8,7 @@ public class MaterialButtonBehaviour : MonoBehaviour
     public Material material;
     public Texture materialTex;
     public string materialName;
+    private Vector2 materialData = new Vector2(1, 1);
 
     void Start()
     {
@@ -22,7 +23,8 @@ public class MaterialButtonBehaviour : MonoBehaviour
     IEnumerator UpdateMaterialOnSelectedPlane()
     {
         Debug.Log("Changing Mat");
-        // GameObject.Find("Tile Checker").GetComponent<SurfaceSelector>().changeMaterial(material);
+        material.mainTextureScale = materialData;
+        GameObject.Find("GeneratedPlane").GetComponent<MeshRenderer>().material = material;
         yield return null;
     }
 
