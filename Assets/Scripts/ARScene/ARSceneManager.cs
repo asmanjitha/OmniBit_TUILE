@@ -142,6 +142,7 @@ public class ARSceneManager : MonoBehaviour
 
         GameObject plane = PlaneFromPoly.GeneratePlane(0, poly, defaultPlaneMat);
         plane.transform.position = center;
+        plane.name = "GeneratedPlane";
 
         yield return plane;
     }
