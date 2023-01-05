@@ -71,16 +71,6 @@ public class PlaceARAnchor : MonoBehaviour
                 GameObject anchor = Instantiate(anchorPrefab, hitPose.position, hitPose.rotation);
                 anchors.Add(anchor);
                 UpdateLineRenderer(hitPose);
-                if (anchors.Count > 1)
-                {
-                    int count = anchors.Count;
-                    if (count > 2)
-                    {
-                        ARSceneManager.ActivateCompleteAnchoringButton();
-                    }
-                    // string dist = GetDistanceWithUnit(anchors[count - 2].transform.position, anchors[count - 1].transform.position);
-                    // MakeDistancelabel(anchors[count - 2].transform.position, anchors[count - 1].transform.position, dist);
-                }
             }
 
         }
@@ -88,6 +78,58 @@ public class PlaceARAnchor : MonoBehaviour
         {
             ToastMessage.ShowToastMessage("No Plane detected");
         }
+
+        TryActivateCompletePolygonButton();
+        TryActivateUndoButton();
+    }
+
+    public void TryActivateCompletePolygonButton()
+    {
+        if (anchors.Count > 2 && ARSceneManager.tracking)
+        {
+            ARSceneManager._instance.CompleteAnchorPlacementButton.SetActive(true);
+        }
+        else
+        {
+            ARSceneManager._instance.CompleteAnchorPlacementButton.SetActive(false);
+        }
+    }
+
+    public void TryActivateUndoButton()
+    {
+        if (anchors.Count > 0 && ARSceneManager.tracking)
+        {
+            ARSceneManager._instance.UndoPlacedAnchorButton.SetActive(true);
+        }
+        else
+        {
+            ARSceneManager._instance.UndoPlacedAnchorButton.SetActive(false);
+        }
+    }
+
+    public void UndoPlacedAnchor()
+    {
+        if (anchors.Count >= 2)
+        {
+            GameObject lastPlaced = anchors[anchors.Count - 1];
+            GameObject anchorBeforeLastPlaced = anchors[anchors.Count - 2];
+            anchors.Remove(lastPlaced);
+            Destroy(lastPlaced);
+            lineRenderer.positionCount -= 1;
+            tempLineRenderer.SetPosition(0, anchorBeforeLastPlaced.transform.position);
+        }
+        else
+        {
+            GameObject lastPlaced = anchors[anchors.Count - 1];
+            anchors.Remove(lastPlaced);
+            Destroy(lastPlaced);
+            lineRenderer.positionCount -= 1;
+            tempLineRenderer.SetPosition(0, Vector3.zero);
+            tempLineRenderer.SetPosition(1, Vector3.zero);
+        }
+        TryActivateCompletePolygonButton();
+        TryActivateUndoButton();
+
     }
 
     public void EndAnchoring()

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.Video;
 using UnityEngine.UI;
+using System;
 
 public class ARSceneManager : MonoBehaviour
 {
@@ -20,8 +21,10 @@ public class ARSceneManager : MonoBehaviour
     public GameObject GeneratePlaneButton;
     public GameObject AddAnchorButton;
     public GameObject CompleteAnchorPlacementButton;
+    public GameObject UndoPlacedAnchorButton;
 
     public Material defaultPlaneMat;
+    private static bool _tracking = false;
 
     // Start is called before the first frame update
     void Start()
@@ -67,6 +70,12 @@ public class ARSceneManager : MonoBehaviour
         set { }
     }
 
+    public static bool tracking
+    {
+        get { return _tracking; }
+        set { _tracking = value; }
+    }
+
     public void ReloadARScene()
     {
         session.Reset();
@@ -79,6 +88,7 @@ public class ARSceneManager : MonoBehaviour
         {
             animationPlayer.Stop();
             AnimaationBGPanel.SetActive(false);
+            tracking = true;
         }
     }
 
@@ -109,14 +119,12 @@ public class ARSceneManager : MonoBehaviour
 
     public static void CloseAnchorPlacingMode()
     {
+        tracking = false;
+        _instance.CompleteAnchorPlacementButton.SetActive(false);
+        _instance.UndoPlacedAnchorButton.SetActive(false);
         _instance.GeneratePlaneButton.SetActive(true);
         _instance.AddAnchorButton.SetActive(false);
-        _instance.CompleteAnchorPlacementButton.SetActive(false);
-    }
 
-    public static void ActivateCompleteAnchoringButton()
-    {
-        _instance.CompleteAnchorPlacementButton.SetActive(true);
     }
 
     public void AccpetMarkedAnchorsAndGeneratePlane()
@@ -145,5 +153,15 @@ public class ARSceneManager : MonoBehaviour
         plane.name = "GeneratedPlane";
 
         yield return plane;
+    }
+
+    public void CompletePolygon()
+    {
+        PlaceARAnchor.instance.EndAnchoring();
+    }
+
+    public void UndoPlacedAnchor()
+    {
+        PlaceARAnchor.instance.UndoPlacedAnchor();
     }
 }
